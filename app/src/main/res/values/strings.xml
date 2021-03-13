@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Jetpack-login-dark-light</string>
+    <string name="google_button">Login with google</string>
+    <string name="google_button_label">Use Google Account</string>
+    <string name="facebook_button">Login with facebook</string>
+    <string name="facebook_button_label">Use Facebook Account</string>
 </resources>
