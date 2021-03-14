@@ -12,7 +12,7 @@ private val DarkColorPalette = darkColors(
     secondary = Teal200,
     background = Black,
     onPrimary = White,
-    onBackground = Gray,
+    onBackground = White,
     onSurface = Gray,
 )
 
