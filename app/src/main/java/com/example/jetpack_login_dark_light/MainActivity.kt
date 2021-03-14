@@ -3,26 +3,18 @@ package com.example.jetpack_login_dark_light
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.Px
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.Size.Companion.Zero
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,15 +31,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            JetpacklogindarklightTheme {
-                MainContent()
+            var isDarkTheme by remember { mutableStateOf(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) }
+            JetpacklogindarklightTheme(isDarkTheme) {
+                MainContent(isDarkTheme) {
+                    isDarkTheme = !isDarkTheme
+                }
             }
         }
     }
 }
 
 @Composable
-fun MainContent() {
+fun MainContent(isDarkTheme: Boolean, toggleTheme: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,6 +51,17 @@ fun MainContent() {
             .padding(horizontal = 24.dp)
             .padding(bottom = 24.dp)
     ) {
+        Toggle(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .wrapContentWidth(Alignment.End),
+            label = "Dark Mode",
+            value = isDarkTheme,
+            onToggle = {
+                toggleTheme()
+            }
+        )
         LoginHeading("Login")
         SocialButton(
             modifier = Modifier
@@ -92,7 +98,7 @@ fun LoginHeading(heading: String) {
             text = heading,
             fontSize = 32.sp,
             modifier = Modifier
-                .padding(vertical = 32.dp)
+                .padding(vertical = 16.dp)
                 .weight(1f),
             color = MaterialTheme.colors.onBackground,
             textAlign = TextAlign.Center,
@@ -212,7 +218,7 @@ fun Input(
 @Composable
 fun Options(modifier: Modifier = Modifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        Toggle(label = "Remember me")
+        Toggle(label = "Remember me", onToggle = {})
         Spacer(modifier = Modifier.weight(1f))
         Text(text = "Forgot Password?", fontSize = 14.sp)
     }
@@ -220,11 +226,16 @@ fun Options(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun Toggle(modifier: Modifier = Modifier, label: String) {
+fun Toggle(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: Boolean = false,
+    onToggle: (value: Boolean) -> Unit
+) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Switch(
-            checked = false,
-            onCheckedChange = {},
+            checked = value,
+            onCheckedChange = { onToggle(it) },
             colors = SwitchDefaults.colors(
                 checkedTrackColor = MaterialTheme.colors.primary,
                 uncheckedTrackColor = MaterialTheme.colors.secondary,
@@ -241,6 +252,6 @@ fun Toggle(modifier: Modifier = Modifier, label: String) {
 @Composable
 fun DefaultPreview() {
     JetpacklogindarklightTheme {
-        MainContent()
+        MainContent(true) {}
     }
 }
